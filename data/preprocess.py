@@ -191,11 +191,11 @@ def split_metadata():
     idx = [i for i in range(len(metajson))]
     np.random.shuffle(idx)
 
-    train = math.floor(len(idx)*0.8)
-    test = math.floor(len(idx)*0.9)
-    train = idx[:train]
-    valid = idx[train:test]
-    test = idx[-test:]
+    train_idx = math.floor(len(idx)*0.8)
+    test_idx = math.floor(len(idx)*0.9)
+    train = idx[:train_idx]
+    valid = idx[train_idx:test_idx]
+    test = idx[-test_idx:]
 
     train_meta = [metajson[i] for i in train]
     valid_meta = [metajson[i] for i in valid]
