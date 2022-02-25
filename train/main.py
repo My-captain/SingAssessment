@@ -23,8 +23,8 @@ def main(config):
         config.input_length = 15 * 16000
 
     # get data loder
-    train_loader, valid_loader = get_dataloader(config.batch_size)
-    solver = Solver(train_loader, valid_loader, config)
+    train_loader, valid_loader, test_loader = get_dataloader(config.batch_size)
+    solver = Solver(train_loader, valid_loader, test_loader, config)
     solver.train()
 
 

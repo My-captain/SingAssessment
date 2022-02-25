@@ -55,6 +55,11 @@ def get_dataloader(batch_size, num_workers=0, shuffle=True):
         feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
         batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn), \
            DataLoader(dataset=Quality400Dataset(
+               meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_valid.json",
+               score_id="songScore", label_id="summary",
+               feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
+               batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn), \
+           DataLoader(dataset=Quality400Dataset(
                meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_test.json",
                score_id="songScore", label_id="summary",
                feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
