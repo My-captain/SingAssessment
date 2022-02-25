@@ -190,11 +190,19 @@ def split_metadata():
     metajson = json.load(open("quality_400/clips_metadata.json", "r"))
     idx = [i for i in range(len(metajson))]
     np.random.shuffle(idx)
-    train = idx[:math.floor(len(idx)*0.8)]
-    test = idx[-math.floor(len(idx) * 0.8):]
+
+    train = math.floor(len(idx)*0.8)
+    test = math.floor(len(idx)*0.9)
+    train = idx[:train]
+    valid = idx[train:test]
+    test = idx[-test:]
+
     train_meta = [metajson[i] for i in train]
+    valid_meta = [metajson[i] for i in valid]
     test_meta = [metajson[i] for i in test]
+
     json.dump(train_meta, open("quality_400/clips_metadata_train.json", "w"), ensure_ascii=False)
+    json.dump(valid_meta, open("quality_400/clips_metadata_valid.json", "w"), ensure_ascii=False)
     json.dump(test_meta, open("quality_400/clips_metadata_test.json", "w"), ensure_ascii=False)
 
 
