@@ -4,6 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 from sklearn import metrics
+from scipy.stats import pearsonr
 import datetime
 import csv
 import tqdm
@@ -32,8 +33,9 @@ def read_file(tsv_file):
 
 
 class Solver(object):
-    def __init__(self, data_loader, valid_loader, config):
+    def __init__(self, data_loader, valid_loader, test_loader, config):
         # data loader
+        self.test_loader = test_loader
         self.valid_loader = valid_loader
         self.data_loader = data_loader
         self.dataset = config.dataset
@@ -141,7 +143,8 @@ class Solver(object):
             self.writer.add_scalar('Loss/train', loss.item(), epoch)
 
             # validation
-            best_metric = self.validation(best_metric, epoch)
+            best_metric = self.validation(best_metric, epoch, self.valid_loader, "Valid")
+            self.validation(best_metric, epoch, self.test_loader, "Test")
 
             # schedule optimizer
             current_optimizer, drop_counter = self.opt_schedule(current_optimizer, drop_counter)
@@ -207,8 +210,8 @@ class Solver(object):
                    epoch + 1, self.n_epochs, ctr, len(self.data_loader), loss.item(),
                    datetime.timedelta(seconds=time.time() - start_t)))
 
-    def validation(self, best_metric, epoch):
-        loss, r2 = self.get_validation_score(epoch)
+    def validation(self, best_metric, epoch, dataloader, flag):
+        loss, r2 = self.get_validation_score(epoch, dataloader, flag)
         print(f"best: {best_metric}, r2:{r2}")
         if r2 > best_metric:
             print('best model!')
@@ -216,13 +219,13 @@ class Solver(object):
             torch.save(self.model.state_dict(), os.path.join(self.model_save_path, 'best_model.pth'))
         return best_metric
 
-    def get_validation_score(self, epoch):
+    def get_validation_score(self, epoch, dataloader, flag):
         self.model = self.model.eval()
         predictions = []
         targets = []
         losses = []
         loss_function = self.get_loss_function()
-        for x, y in tqdm.tqdm(self.valid_loader):
+        for x, y in tqdm.tqdm(dataloader):
             # forward
             x = self.to_var(x)
             y = self.to_var(y)
@@ -235,8 +238,10 @@ class Solver(object):
         losses = np.mean(np.array(losses))
         predictions, targets = np.array(predictions), np.array(targets)
         r2 = metrics.r2_score(targets, predictions)
-        print('r2: %.4f' % r2)
+        pearson = pearsonr(predictions, targets)
+        print(f"R2:{r2:.4f}\tpearson:{pearson:.4f}")
 
-        self.writer.add_scalar('Loss/valid', losses, epoch)
-        self.writer.add_scalar('R2/valid', r2, epoch)
+        self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
+        self.writer.add_scalar(f"R2/{flag}", r2, epoch)
+        self.writer.add_scalar(f"Pearson/{flag}", pearson, epoch)
         return losses, r2
