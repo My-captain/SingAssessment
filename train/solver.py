@@ -248,9 +248,10 @@ class Solver(object):
         # self.writer.add_scalar(f"Pearson/{flag}", pearson[0], epoch)
         # self.writer.add_scalar(f"Pearson_p/{flag}", pearson[1], epoch)
         # return losses, r2
-
-        roc_auc = metrics.roc_auc_score(targets, predictions, average="macro")
-        print(f"ROC_AUC:{roc_auc:.2f}")
+        roc_auc = metrics.roc_auc_score(targets, predictions, average="macro", multi_class="ovo")
+        predictions = np.argmax(predictions, axis=-1)
+        macro_precision = metrics.precision_score(targets, predictions, average="macro")
         self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
+        self.writer.add_scalar(f"Macro Precision/{flag}", macro_precision, epoch)
         self.writer.add_scalar(f"ROC_AUC/{flag}", roc_auc, epoch)
         return losses, roc_auc

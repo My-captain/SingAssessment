@@ -63,7 +63,7 @@ def collate_fn_classifier(batch):
             return 3
     x = [i[0] for i in batch]
     y = [classify_score(i[1]) for i in batch]
-    return torch.tensor(x, dtype=torch.float), torch.tensor(y, dtype=torch.float)
+    return torch.tensor(x, dtype=torch.float), torch.tensor(y, dtype=torch.long)
 
 
 def get_dataloader(batch_size, num_workers=0, shuffle=True):

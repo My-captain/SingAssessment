@@ -28,6 +28,7 @@ def load_and_test(model, model_path, dataloader):
     # 载入模型
     S = torch.load(model_path)
     model.load_state_dict(S)
+    model = model.cuda()
 
     # 进行预测
     predictions = []
@@ -41,15 +42,26 @@ def load_and_test(model, model_path, dataloader):
         predictions.extend(out)
         targets.extend(y.data.cpu().numpy())
     predictions, targets = np.array(predictions), np.array(targets)
+    predictions = np.argmax(predictions, axis=-1)
 
-    # 计算指标
-    roc_auc = metrics.roc_auc_score(targets, predictions, average="macro")
-    print(f"ROC_AUC:{roc_auc:.2f}")
-    return roc_auc
+    correct = np.sum(predictions==targets)
+    print(f"correct: {correct}")
+    print(f"false: {len(predictions)-correct}")
+    print(f"Micro Precision : {metrics.precision_score(targets, predictions, average='micro')}")
+    delta = predictions - targets
+    filter = (delta!=0)
+    estimate = np.array((delta[filter], predictions[filter], targets[filter]))
+    delta = delta[filter]
+    print(f"Delta -3: {np.sum(delta==-3)}")
+    print(f"Delta -2: {np.sum(delta==-2)}")
+    print(f"Delta -1: {np.sum(delta==-1)}")
+    print(f"Delta 1: {np.sum(delta==1)}")
+    print(f"Delta 2: {np.sum(delta==2)}")
+    print(f"Delta 3: {np.sum(delta==3)}")
 
 
 if __name__ == '__main__':
     _, _, test_loader = get_dataloader(128)
     model = CNNSA()
-    load_and_test(model, "", test_loader)
+    load_and_test(model, "/home/zliu-elliot/workspace/SingAssessment/model_serial/best_model.pth", test_loader)
 
