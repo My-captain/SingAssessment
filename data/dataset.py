@@ -67,21 +67,22 @@ def collate_fn_classifier(batch):
 
 
 def get_dataloader(batch_size, num_workers=0, shuffle=True):
+    # TODO: 回归/分类  需要修改collate_fn
     return DataLoader(dataset=Quality400Dataset(
         meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_train_国歌.json",
         score_id="songScore", label_id="summary",
         feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
-        batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn), \
+        batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn_classifier), \
            DataLoader(dataset=Quality400Dataset(
                meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_valid_国歌.json",
                score_id="songScore", label_id="summary",
                feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
-               batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn), \
+               batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn_classifier), \
            DataLoader(dataset=Quality400Dataset(
                meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_test_国歌.json",
                score_id="songScore", label_id="summary",
                feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
-               batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn)
+               batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn_classifier)
 
 
 if __name__ == '__main__':
