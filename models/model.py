@@ -482,7 +482,7 @@ class CNNSA(nn.Module):
             # TODO: 回归/分类
             # nn.Linear(128, 1),
             nn.Linear(128, 4),
-            nn.Softmax(),
+            nn.Softmax(dim=1),
         )
 
     def forward(self, x):
@@ -584,5 +584,5 @@ class HarmonicCNN(nn.Module):
 
 if __name__ == '__main__':
     model = CNNSA()
-    feature = torch.randn((1, 4, 96, 94))
+    feature = torch.randn((32, 4, 96, 94))
     model(feature)
