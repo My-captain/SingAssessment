@@ -147,7 +147,7 @@ class Solver(object):
             self.validation(best_metric, epoch, self.test_loader, "Test")
 
             # schedule optimizer
-            current_optimizer, drop_counter = self.opt_schedule(current_optimizer, drop_counter)
+            # current_optimizer, drop_counter = self.opt_schedule(current_optimizer, drop_counter)
 
         print("[%s] Train finished. Elapsed: %s"
               % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -239,9 +239,10 @@ class Solver(object):
         predictions, targets = np.array(predictions), np.array(targets)
         r2 = metrics.r2_score(targets, predictions)
         pearson = pearsonr(predictions, targets)
-        print(f"R2:{r2:.4f}\tpearson:{pearson:.4f}")
+        print(f"R2:{r2:.3f}\tpearson:{pearson[0]:.3f} p:{pearson[1]:.2f}")
 
         self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
         self.writer.add_scalar(f"R2/{flag}", r2, epoch)
-        self.writer.add_scalar(f"Pearson/{flag}", pearson, epoch)
+        self.writer.add_scalar(f"Pearson/{flag}", pearson[0], epoch)
+        self.writer.add_scalar(f"Pearson_p/{flag}", pearson[1], epoch)
         return losses, r2

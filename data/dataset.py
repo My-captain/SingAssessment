@@ -50,17 +50,17 @@ def collate_fn(batch):
 
 def get_dataloader(batch_size, num_workers=0, shuffle=True):
     return DataLoader(dataset=Quality400Dataset(
-        meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_train.json",
+        meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_train_国歌.json",
         score_id="songScore", label_id="summary",
         feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
         batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn), \
            DataLoader(dataset=Quality400Dataset(
-               meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_valid.json",
+               meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_valid_国歌.json",
                score_id="songScore", label_id="summary",
                feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
                batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn), \
            DataLoader(dataset=Quality400Dataset(
-               meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_test.json",
+               meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_test_国歌.json",
                score_id="songScore", label_id="summary",
                feature_dir="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clip_feature"),
                batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, collate_fn=collate_fn)
