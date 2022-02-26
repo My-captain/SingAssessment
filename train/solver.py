@@ -110,7 +110,9 @@ class Solver(object):
         return Variable(x)
 
     def get_loss_function(self):
-        return nn.MSELoss()
+        # TODO: 回归/分类
+        # return nn.MSELoss()
+        return nn.CrossEntropyLoss()
 
     def train(self):
         # Start training
@@ -212,7 +214,6 @@ class Solver(object):
 
     def validation(self, best_metric, epoch, dataloader, flag):
         loss, r2 = self.get_validation_score(epoch, dataloader, flag)
-        print(f"best: {best_metric}, r2:{r2}")
         if r2 > best_metric:
             print('best model!')
             best_metric = r2
@@ -237,12 +238,19 @@ class Solver(object):
             targets.extend(y.data.cpu().numpy())
         losses = np.mean(np.array(losses))
         predictions, targets = np.array(predictions), np.array(targets)
-        r2 = metrics.r2_score(targets, predictions)
-        pearson = pearsonr(predictions, targets)
-        print(f"R2:{r2:.3f}\tpearson:{pearson[0]:.3f} p:{pearson[1]:.2f}")
 
+        # TODO: 回归/分类
+        # r2 = metrics.r2_score(targets, predictions)
+        # pearson = pearsonr(predictions, targets)
+        # print(f"R2:{r2:.3f}\tpearson:{pearson[0]:.3f} p:{pearson[1]:.2f}")
+        # self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
+        # self.writer.add_scalar(f"R2/{flag}", r2, epoch)
+        # self.writer.add_scalar(f"Pearson/{flag}", pearson[0], epoch)
+        # self.writer.add_scalar(f"Pearson_p/{flag}", pearson[1], epoch)
+        # return losses, r2
+
+        roc_auc = metrics.roc_auc_score(targets, predictions, average="macro")
+        print(f"ROC_AUC:{roc_auc:.2f}")
         self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
-        self.writer.add_scalar(f"R2/{flag}", r2, epoch)
-        self.writer.add_scalar(f"Pearson/{flag}", pearson[0], epoch)
-        self.writer.add_scalar(f"Pearson_p/{flag}", pearson[1], epoch)
-        return losses, r2
+        self.writer.add_scalar(f"ROC_AUC/{flag}", roc_auc, epoch)
+        return losses, roc_auc

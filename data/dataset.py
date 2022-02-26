@@ -48,6 +48,24 @@ def collate_fn(batch):
     return torch.tensor(x, dtype=torch.float), torch.tensor(y, dtype=torch.float)
 
 
+def collate_fn_classifier(batch):
+    """
+    用于分类任务的Dataloader函数
+    """
+    def classify_score(score):
+        if score <= 60:
+            return 0
+        elif 60 < score <= 70:
+            return 1
+        elif 70 < score < 80:
+            return 2
+        elif score >= 80:
+            return 3
+    x = [i[0] for i in batch]
+    y = [classify_score(i[1]) for i in batch]
+    return torch.tensor(x, dtype=torch.float), torch.tensor(y, dtype=torch.float)
+
+
 def get_dataloader(batch_size, num_workers=0, shuffle=True):
     return DataLoader(dataset=Quality400Dataset(
         meta_path="/home/zliu-elliot/workspace/SingAssessment/data/quality_400/clips_metadata_train_国歌.json",
