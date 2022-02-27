@@ -111,8 +111,8 @@ class Solver(object):
 
     def get_loss_function(self):
         # TODO: 回归/分类
-        # return nn.MSELoss()
-        return nn.CrossEntropyLoss()
+        return nn.MSELoss()
+        # return nn.CrossEntropyLoss()
 
     def train(self):
         # Start training
@@ -240,18 +240,18 @@ class Solver(object):
         predictions, targets = np.array(predictions), np.array(targets)
 
         # TODO: 回归/分类
-        # r2 = metrics.r2_score(targets, predictions)
-        # pearson = pearsonr(predictions, targets)
-        # print(f"R2:{r2:.3f}\tpearson:{pearson[0]:.3f} p:{pearson[1]:.2f}")
-        # self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
-        # self.writer.add_scalar(f"R2/{flag}", r2, epoch)
-        # self.writer.add_scalar(f"Pearson/{flag}", pearson[0], epoch)
-        # self.writer.add_scalar(f"Pearson_p/{flag}", pearson[1], epoch)
-        # return losses, r2
-        roc_auc = metrics.roc_auc_score(targets, predictions, average="macro", multi_class="ovo")
-        predictions = np.argmax(predictions, axis=-1)
-        macro_precision = metrics.precision_score(targets, predictions, average="macro")
+        r2 = metrics.r2_score(targets, predictions)
+        pearson = pearsonr(predictions, targets)
+        print(f"R2:{r2:.3f}\tpearson:{pearson[0]:.3f} p:{pearson[1]:.2f}")
         self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
-        self.writer.add_scalar(f"Macro Precision/{flag}", macro_precision, epoch)
-        self.writer.add_scalar(f"ROC_AUC/{flag}", roc_auc, epoch)
-        return losses, roc_auc
+        self.writer.add_scalar(f"R2/{flag}", r2, epoch)
+        self.writer.add_scalar(f"Pearson/{flag}", pearson[0], epoch)
+        self.writer.add_scalar(f"Pearson_p/{flag}", pearson[1], epoch)
+        return losses, r2
+        # roc_auc = metrics.roc_auc_score(targets, predictions, average="macro", multi_class="ovo")
+        # predictions = np.argmax(predictions, axis=-1)
+        # macro_precision = metrics.precision_score(targets, predictions, average="macro")
+        # self.writer.add_scalar(f"Loss/{flag}", losses, epoch)
+        # self.writer.add_scalar(f"Macro Precision/{flag}", macro_precision, epoch)
+        # self.writer.add_scalar(f"ROC_AUC/{flag}", roc_auc, epoch)
+        # return losses, roc_auc

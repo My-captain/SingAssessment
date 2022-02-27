@@ -480,9 +480,10 @@ class CNNSA(nn.Module):
             nn.Linear(256, 128),
 
             # TODO: 回归/分类
-            # nn.Linear(128, 1),
-            nn.Linear(128, 4),
-            nn.Softmax(dim=1),
+            nn.Linear(128, 1),
+            nn.Sigmoid(),
+            # nn.Linear(128, 4),
+            # nn.Softmax(dim=1),
         )
 
     def forward(self, x):
@@ -505,8 +506,8 @@ class CNNSA(nn.Module):
         # Dense
         x = self.fc(x)
         # TODO: 回归/分类
-        # return x.squeeze(1)
-        return x
+        return x.squeeze(1)
+        # return x
 
 
 class HarmonicCNN(nn.Module):

@@ -189,12 +189,13 @@ def generate_clip_dataset():
 def split_metadata():
     metajson = json.load(open("quality_400/clips_metadata.json", "r"))
 
-    whole_meta = json.load(open("./meta_data.json", "r"))
-    id_2_info = dict()
-    for item in whole_meta:
-        id_2_info[item["fileId"]] = item
-    s = metajson
-    metajson = [i for i in s if "国歌" in id_2_info[i["songId"]]["referenceSong"]]
+    # TODO: 所有歌曲/国歌
+    # whole_meta = json.load(open("./meta_data.json", "r"))
+    # id_2_info = dict()
+    # for item in whole_meta:
+    #     id_2_info[item["fileId"]] = item
+    # s = metajson
+    # metajson = [i for i in s if "国歌" in id_2_info[i["songId"]]["referenceSong"]]
 
     idx = [i for i in range(len(metajson))]
     np.random.shuffle(idx)
@@ -209,9 +210,10 @@ def split_metadata():
     valid_meta = [metajson[i] for i in valid]
     test_meta = [metajson[i] for i in test]
 
-    json.dump(train_meta, open("quality_400/clips_metadata_train_国歌.json", "w"), ensure_ascii=False)
-    json.dump(valid_meta, open("quality_400/clips_metadata_valid_国歌.json", "w"), ensure_ascii=False)
-    json.dump(test_meta, open("quality_400/clips_metadata_test_国歌.json", "w"), ensure_ascii=False)
+    # TODO: 所有歌曲/国歌
+    json.dump(train_meta, open("quality_400/clips_metadata_train.json", "w"), ensure_ascii=False)
+    json.dump(valid_meta, open("quality_400/clips_metadata_valid.json", "w"), ensure_ascii=False)
+    json.dump(test_meta, open("quality_400/clips_metadata_test.json", "w"), ensure_ascii=False)
 
 
 def seq_2_matrix(seq, dimension):
