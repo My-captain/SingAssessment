@@ -34,7 +34,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', type=str, default='quality400', choices=['quality400'])
     parser.add_argument('--model_type', type=str, default='cnnsa',
                         choices=['fcn', 'musicnn', 'crnn', 'sample', 'se', 'short', 'short_res', 'cnnsa', 'hcnn'])
-    parser.add_argument('--n_epochs', type=int, default=600)
+    parser.add_argument('--n_epochs', type=int, default=400)
     parser.add_argument('--batch_size', type=int, default=256)
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--use_tensorboard', type=int, default=1)
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_load_path', type=str, default='.')
     parser.add_argument('--data_path', type=str, default='./data')
     parser.add_argument('--log_step', type=int, default=20)
-    parser.add_argument('--log_path', type=str, default='runs/CNNSA_归一化_600epoch_无Schedule_所有歌曲')
+    parser.add_argument('--log_path', type=str, default='runs/CNNSA_四分类_400epoch_无Schedule_国歌_歌曲级分割数据集')
 
     config = parser.parse_args()
 

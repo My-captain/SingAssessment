@@ -186,16 +186,48 @@ def generate_clip_dataset():
     json.dump(meta, open("quality_400/clips_metadata.json", "w"), ensure_ascii=False)
 
 
+def split_metadata_by_song():
+    metajson = json.load(open("quality_400/clips_metadata.json", "r"))
+
+    # TODO: 所有歌曲/国歌
+    whole_meta = json.load(open("./meta_data.json", "r"))
+    id_2_info = dict()
+    for item in whole_meta:
+        id_2_info[item["fileId"]] = item
+    s = metajson
+    metajson = [i for i in s if "国歌" in id_2_info[i["songId"]]["referenceSong"]]
+
+    song_clips = dict()
+    for clip in metajson:
+        clips = song_clips.get(clip["songId"], list())
+        clips.append(clip)
+        song_clips[clip["songId"]] = clips
+
+    train_meta, valid_meta, test_meta = [], [], []
+    for song, clips in song_clips.items():
+        clip_n = len(clips)
+        train_idx = math.floor(clip_n * 0.6)
+        test_idx = math.floor(clip_n*0.8)
+        train_meta.extend(clips[:train_idx])
+        valid_meta.extend(clips[train_idx:test_idx])
+        test_meta.extend(clips[test_idx-clip_n:])
+
+    # TODO: 所有歌曲/国歌
+    json.dump(train_meta, open("quality_400/clips_metadata_train_国歌_songLevel.json", "w"), ensure_ascii=False)
+    json.dump(valid_meta, open("quality_400/clips_metadata_valid_国歌_songLevel.json", "w"), ensure_ascii=False)
+    json.dump(test_meta, open("quality_400/clips_metadata_test_国歌_songLevel.json", "w"), ensure_ascii=False)
+
+
 def split_metadata():
     metajson = json.load(open("quality_400/clips_metadata.json", "r"))
 
     # TODO: 所有歌曲/国歌
-    # whole_meta = json.load(open("./meta_data.json", "r"))
-    # id_2_info = dict()
-    # for item in whole_meta:
-    #     id_2_info[item["fileId"]] = item
-    # s = metajson
-    # metajson = [i for i in s if "国歌" in id_2_info[i["songId"]]["referenceSong"]]
+    whole_meta = json.load(open("./meta_data.json", "r"))
+    id_2_info = dict()
+    for item in whole_meta:
+        id_2_info[item["fileId"]] = item
+    s = metajson
+    metajson = [i for i in s if "国歌" in id_2_info[i["songId"]]["referenceSong"]]
 
     idx = [i for i in range(len(metajson))]
     np.random.shuffle(idx)
@@ -267,4 +299,4 @@ if __name__ == '__main__':
     # main("/home/zliu-elliot/workspace/SingAssessment/audio_output/")
     # generate_clip_dataset()
     # save_feature_dataset()
-    split_metadata()
+    split_metadata_by_song()
